@@ -46,10 +46,13 @@ def _impl(ctx):
     for index, tag in enumerate(images.keys()):
         image = images[tag]
 
+        tag = tag if not stamp else tag.replace("{", "${")
+
         pusher_args, pusher_inputs = _gen_img_args(ctx, image, _get_runfile_path)
         pusher_args += ["--stamp-info-file=%s" % _get_runfile_path(ctx, f) for f in stamp_inputs]
         if ctx.attr.skip_unchanged_digest:
             pusher_args.append("--skip-unchanged-digest")
+            
         pusher_args.append("--dst={}".format(tag))
         pusher_args.append("--format={}".format(ctx.attr.format))
 
